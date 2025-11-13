@@ -1,0 +1,110 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "SkyBlock Price & History API",
+    "version": "1.0.0",
+    "description": "Fetch Hypixel SkyBlock bazaar and auction history data for any item by name or ID."
+  },
+  "servers": [
+    {
+      "url": "https://your-domain.com",
+      "description": "Production server"
+    }
+  ],
+  "paths": {
+    "/skyblock/item": {
+      "get": {
+        "operationId": "getSkyblockItem",
+        "summary": "Get SkyBlock item pricing and history",
+        "description": "Returns current bazaar data and auction history for a given Hypixel SkyBlock item identifier (name or ID).",
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "query",
+            "required": true,
+            "description": "Item ID or human-readable item name (e.g. 'HYPERION' or 'Hyperion').",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Item data retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "source": {
+                      "type": "string",
+                      "description": "Whether the data came from cache or live API."
+                    },
+                    "identifier_input": {
+                      "type": "string"
+                    },
+                    "normalized_id": {
+                      "type": "string"
+                    },
+                    "has_bazaar": {
+                      "type": "boolean"
+                    },
+                    "has_auction_history": {
+                      "type": "boolean"
+                    },
+                    "bazaar": {
+                      "type": "object",
+                      "nullable": true,
+                      "properties": {
+                        "buyPrice": {
+                          "type": "number"
+                        },
+                        "sellPrice": {
+                          "type": "number"
+                        },
+                        "buyVolume": {
+                          "type": "number"
+                        },
+                        "sellVolume": {
+                          "type": "number"
+                        },
+                        "buyOrders": {
+                          "type": "number"
+                        },
+                        "sellOrders": {
+                          "type": "number"
+                        }
+                      }
+                    },
+                    "auctionHistoryRaw": {
+                      "type": "object",
+                      "nullable": true,
+                      "description": "Raw auction history data as returned by CoflNet."
+                    },
+                    "hintsForModel": {
+                      "type": "object",
+                      "properties": {
+                        "recommendedAnalysis": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing or invalid identifier."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    }
+  }
+}
